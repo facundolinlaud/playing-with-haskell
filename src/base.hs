@@ -50,16 +50,18 @@ transcribir [] = []
 transcribir (A : xs) = U : transcribir xs
 transcribir (x : xs) = complementarBase x : transcribir xs
 
-removerListasVacias :: [[a]] -> [[a]]
-removerListasVacias [] = []
-removerListasVacias (l : ls) | length l == 0 = removerListasVacias ls
-                             | otherwise = l : removerListasVacias ls
+iniciar :: CadenaDNA -> [Proteina]
+iniciar x = iniciarAux [transcribir x,
+                        transcribir(complementarCadenaDNA x),
+                        transcribir(reverse x),
+                        transcribir(complementarCadenaDNA(reverse x))]
 
-inicio :: CadenaDNA -> [Proteina]
-inicio xs = obtenerProteinas(
-                encontrarFinal(
-                    cortarSobrante(
-                        encontrarInicios xs)))
+iniciarAux :: [CadenaDNA] -> [Proteina]
+iniciarAux [] = []
+iniciarAux (x : xs) = obtenerProteinas(
+                        encontrarFinal(
+                            cortarSobrante(
+                                 encontrarInicios x))) ++ iniciarAux xs
 
 encontrarInicios :: CadenaDNA -> [CadenaDNA]
 encontrarInicios [] = []
@@ -80,7 +82,9 @@ cortarSobranteAux (a : b : c : xs) = a : b : c : cortarSobranteAux xs
 
 encontrarFinal :: [CadenaDNA] -> [CadenaDNA]
 encontrarFinal [] = []
-encontrarFinal (x : xs) = encontrarFinalAux x : encontrarFinal xs
+encontrarFinal (x : xs) | length(baseSinFinal) == length x = encontrarFinal xs
+                        | otherwise = baseSinFinal : encontrarFinal xs
+                          where baseSinFinal = encontrarFinalAux x
 
 encontrarFinalAux :: CadenaDNA -> CadenaDNA
 encontrarFinalAux [] = []
