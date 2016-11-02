@@ -50,32 +50,52 @@ transcribir [] = []
 transcribir (A : xs) = U : transcribir xs
 transcribir (x : xs) = complementarBase x : transcribir xs
 
-obtenerProteinas :: CadenaDNA -> [Proteina]
-obtenerProteinas xs = removerListasVacias
-                      [obtenerSubproteinas(cortarInicio (transcribir xs) False False False),
-                       obtenerSubproteinas(cortarInicio (transcribir (complementarCadenaDNA xs)) False False False),
-                       obtenerSubproteinas(cortarInicio (transcribir (reverse xs)) False False False),
-                       obtenerSubproteinas(cortarInicio (transcribir (complementarCadenaDNA (reverse xs))) False False False)]
-
 removerListasVacias :: [[a]] -> [[a]]
 removerListasVacias [] = []
 removerListasVacias (l : ls) | length l == 0 = removerListasVacias ls
                              | otherwise = l : removerListasVacias ls
-cortarInicio :: CadenaDNA -> Bool -> Bool -> Bool -> CadenaDNA
-cortarInicio [] _ _ _ = []
-cortarInicio (A : bs) False False False = cortarInicio bs True False False
-cortarInicio (U : bs) True False False = cortarInicio bs True True False
-cortarInicio (G : bs) True True False = bs
-cortarInicio (_ : bs) _ _ _ = cortarInicio bs False False False
 
-obtenerSubproteinas :: CadenaDNA -> Proteina
-obtenerSubproteinas [] = []
-obtenerSubproteinas (a : []) = []
-obtenerSubproteinas (_ : _ : []) = []
-obtenerSubproteinas (U : A : A : xs) = []
-obtenerSubproteinas (U : A : G : xs) = []
-obtenerSubproteinas (U : G : A : xs) = []
-obtenerSubproteinas (a : b : c : xs) = (traducirCodonAAminoacido(a, b, c)) : obtenerSubproteinas xs
+inicio :: CadenaDNA -> [Proteina]
+inicio xs = obtenerProteinas(
+                encontrarFinal(
+                    cortarSobrante(
+                        encontrarInicios xs)))
+
+encontrarInicios :: CadenaDNA -> [CadenaDNA]
+encontrarInicios [] = []
+encontrarInicios (_ : []) = []
+encontrarInicios (_ : _ : []) = []
+encontrarInicios (A : U : G : xs) = [xs] ++ encontrarInicios xs
+encontrarInicios (_ : xs) = encontrarInicios xs
+
+cortarSobrante :: [CadenaDNA] -> [CadenaDNA]
+cortarSobrante [] = []
+cortarSobrante (x : xs) = cortarSobranteAux x : cortarSobrante xs
+
+cortarSobranteAux :: CadenaDNA -> CadenaDNA
+cortarSobranteAux [] = []
+cortarSobranteAux (_ : []) = []
+cortarSobranteAux (_ : _ : []) = []
+cortarSobranteAux (a : b : c : xs) = a : b : c : cortarSobranteAux xs
+
+encontrarFinal :: [CadenaDNA] -> [CadenaDNA]
+encontrarFinal [] = []
+encontrarFinal (x : xs) = encontrarFinalAux x : encontrarFinal xs
+
+encontrarFinalAux :: CadenaDNA -> CadenaDNA
+encontrarFinalAux [] = []
+encontrarFinalAux (U : A : A : xs) = []
+encontrarFinalAux (U : A : G : xs) = []
+encontrarFinalAux (U : G : A : xs) = []
+encontrarFinalAux (a : b : c : xs) = a : b : c : encontrarFinalAux xs
+
+obtenerProteinas :: [CadenaDNA] -> [Proteina]
+obtenerProteinas [] = []
+obtenerProteinas (x : xs) = obtenerProteinasAux x : obtenerProteinas xs
+
+obtenerProteinasAux :: CadenaDNA -> Proteina
+obtenerProteinasAux [] = []
+obtenerProteinasAux (a : b : c : xs) = (traducirCodonAAminoacido(a, b, c)) : obtenerProteinasAux xs
 
 -- Funcion que dado un codon devuelve el correspondiente aminoacido
 traducirCodonAAminoacido :: Codon -> Aminoacido
