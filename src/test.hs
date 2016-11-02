@@ -49,16 +49,6 @@ testCortarInicio2 = TestCase (assertEqual "for cortarInicio"
         []
         (cortarInicio [U, A, U, A, G, C, A, U, U, A, A, G, U, G, A, G, G] False False False))
 
-testCortarFinal1 :: Test
-testCortarFinal1 = TestCase (assertEqual "for cortarFinal"
-        [A, G, C, A, U, U, A, A, G]
-        (cortarFinal [A, G, C, A, U, U, A, A, G, U, G, A, G, G]))
-
-testCortarFinal2 :: Test
-testCortarFinal2 = TestCase (assertEqual "for cortarFinal"
-        []
-        (cortarFinal [A, G, C, A, U, U, A, A, G, G, G]))
-
 testObtenerSubproteinas1 :: Test
 testObtenerSubproteinas1 = TestCase (assertEqual "for obtenerSubproteinas"
         [Ser,Ile,Lys]
@@ -95,8 +85,6 @@ tests = TestList [TestLabel "testComplementarBase1" testComplementarBase1,
                   TestLabel "testRemoverListasVacias1" testRemoverListasVacias1,
                   TestLabel "testCortarInicio1" testCortarInicio1,
                   TestLabel "testCortarInicio2" testCortarInicio2,
-                  TestLabel "testCortarFinal1" testCortarFinal1,
-                  TestLabel "testCortarFinal2" testCortarFinal2,
                   TestLabel "testObtenerSubproteinas1" testObtenerSubproteinas1,
                   TestLabel "testObtenerSubproteinas2" testObtenerSubproteinas2,
                   TestLabel "testObtenerProteinas1" testObtenerProteinas1,
