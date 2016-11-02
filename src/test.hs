@@ -1,7 +1,6 @@
-module Example where
-
 import Test.HUnit
-import Base
+import TestingBase
+import TP
 
 testComplementarBase1 :: Test
 testComplementarBase1 = TestCase (assertEqual "for complementarBase1" A (complementarBase T))
