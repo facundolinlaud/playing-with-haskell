@@ -25,8 +25,8 @@ transcribir (x : xs) = complementarBase x : transcribir xs
 iniciar :: CadenaDNA -> [Proteina]
 iniciar x = quitarVectoresVacios(
                 iniciarAux [transcribir x,
-                            transcribir(complementarCadenaDNA x),
                             transcribir(reverse x),
+                            transcribir(complementarCadenaDNA x),
                             transcribir(reverse (complementarCadenaDNA x))])
 
 quitarVectoresVacios :: [Proteina] -> [Proteina]
