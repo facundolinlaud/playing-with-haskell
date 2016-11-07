@@ -1,5 +1,4 @@
 import Test.HUnit
-import TestingBase
 import TP
 
 testComplementarBase1 :: Test

@@ -1,6 +1,6 @@
 module TP where
 
-import Base
+import TestingBase
 
 complementarBase :: BaseNucleotidica -> BaseNucleotidica
 complementarBase A = T
@@ -23,10 +23,16 @@ transcribir (A : xs) = U : transcribir xs
 transcribir (x : xs) = complementarBase x : transcribir xs
 
 iniciar :: CadenaDNA -> [Proteina]
-iniciar x = iniciarAux [transcribir x,
-                        transcribir(complementarCadenaDNA x),
-                        transcribir(reverse x),
-                        transcribir(complementarCadenaDNA(reverse x))]
+iniciar x = quitarVectoresVacios(
+                iniciarAux [transcribir x,
+                            transcribir(complementarCadenaDNA x),
+                            transcribir(reverse x),
+                            transcribir(reverse (complementarCadenaDNA x))])
+
+quitarVectoresVacios :: [Proteina] -> [Proteina]
+quitarVectoresVacios [] = []
+quitarVectoresVacios ([] : xs) = quitarVectoresVacios xs
+quitarVectoresVacios (x : xs) = x : quitarVectoresVacios xs
 
 iniciarAux :: [CadenaRNA] -> [Proteina]
 iniciarAux [] = []
