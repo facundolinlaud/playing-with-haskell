@@ -71,8 +71,9 @@ testEncontrarFinal3 = TestCase (assertEqual "for encontrarFinal"
         []
         (encontrarFinal [[U, A, G, A, C, G]]))
 
-tests :: Test
-tests = TestList [TestLabel "testComplementarBase1" testComplementarBase1,
+runTests :: IO Counts
+runTests = runTestTT (TestList [
+                  TestLabel "testComplementarBase1" testComplementarBase1,
                   TestLabel "testComplementarBase2" testComplementarBase2,
                   TestLabel "testComplementarCadenaDNA1" testComplementarCadenaDNA1,
                   TestLabel "testComplementarCadenaDNA2" testComplementarCadenaDNA2,
@@ -85,4 +86,5 @@ tests = TestList [TestLabel "testComplementarBase1" testComplementarBase1,
                   TestLabel "testCortarSobrante1" testCortarSobrante1,
                   TestLabel "testEncontrarFinal1" testEncontrarFinal1,
                   TestLabel "testEncontrarFinal2" testEncontrarFinal2,
-                  TestLabel "testEncontrarFinal3" testEncontrarFinal3]
+                  TestLabel "testEncontrarFinal3" testEncontrarFinal3
+              ])
