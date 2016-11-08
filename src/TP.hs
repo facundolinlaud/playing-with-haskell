@@ -1,6 +1,6 @@
 module TP where
 
-data BaseNucleotidica = A | C | G | T | U deriving (Show, Eq)
+data BaseNucleotidica = A | C | G | T | U deriving Show
 
 type CadenaDNA = [BaseNucleotidica]
 
@@ -9,7 +9,7 @@ type CadenaRNA = [BaseNucleotidica]
 type Codon = (BaseNucleotidica, BaseNucleotidica, BaseNucleotidica)
 
 data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln |
-    Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving (Show, Eq)
+    Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving Show
 
 type Proteina = [Aminoacido]
 
