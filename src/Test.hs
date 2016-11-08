@@ -1,8 +1,4 @@
 import Test.HUnit
-
-import Base
-import ManejoDeBases
-import SintesisDeProteinas
 import TP
 
 testComplementarBase1 :: Test

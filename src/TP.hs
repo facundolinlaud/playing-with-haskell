@@ -1,8 +1,17 @@
 module TP where
 
-import Base
-import ManejoDeBases
-import SintesisDeProteinas
+data BaseNucleotidica = A | C | G | T | U deriving (Show, Eq)
+
+type CadenaDNA = [BaseNucleotidica]
+
+type CadenaRNA = [BaseNucleotidica]
+
+type Codon = (BaseNucleotidica, BaseNucleotidica, BaseNucleotidica)
+
+data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln |
+    Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving (Show, Eq)
+
+type Proteina = [Aminoacido]
 
 iniciar :: CadenaDNA -> [Proteina]
 iniciar x = quitarCadenasVacias(
@@ -11,7 +20,138 @@ iniciar x = quitarCadenasVacias(
                                      transcribir(complementarCadenaDNA x),
                                      transcribir(obtenerCadenaReverseDNA (complementarCadenaDNA x))])
 
+obtenerCadenaReverseDNA :: CadenaDNA -> CadenaDNA
+obtenerCadenaReverseDNA [] = []
+obtenerCadenaReverseDNA (x : xs) = (obtenerCadenaReverseDNA xs) ++ [x]
+
+complementarCadenaDNA :: CadenaDNA -> CadenaDNA
+complementarCadenaDNA [] = []
+complementarCadenaDNA (x : xs) = complementarBase x : complementarCadenaDNA xs
+
+complementarBase :: BaseNucleotidica -> BaseNucleotidica
+complementarBase A = T
+complementarBase T = A
+complementarBase C = G
+complementarBase G = C
+complementarBase b = b
+
+transcribir :: CadenaDNA -> CadenaRNA
+transcribir [] = []
+transcribir (A : xs) = U : transcribir xs
+transcribir (x : xs) = complementarBase x : transcribir xs
+
+sintetizarProteinas :: [CadenaRNA] -> [Proteina]
+sintetizarProteinas [] = []
+sintetizarProteinas (x : xs) = obtenerProteinas(
+                                    encontrarFinal(
+                                        cortarSobrante(
+                                            encontrarInicios x))) ++ sintetizarProteinas xs
+
+encontrarInicios :: CadenaRNA -> [CadenaRNA]
+encontrarInicios [] = []
+encontrarInicios (_ : []) = []
+encontrarInicios (_ : _ : []) = []
+encontrarInicios (_ : _ : _ : []) = []
+encontrarInicios (A : U : G : xs) = [xs] ++ encontrarInicios xs
+encontrarInicios (_ : xs) = encontrarInicios xs
+
+cortarSobrante :: [CadenaRNA] -> [CadenaRNA]
+cortarSobrante [] = []
+cortarSobrante (x : xs) = cortarSobranteAux x : cortarSobrante xs
+
+cortarSobranteAux :: CadenaRNA -> CadenaRNA
+cortarSobranteAux [] = []
+cortarSobranteAux (_ : []) = []
+cortarSobranteAux (_ : _ : []) = []
+cortarSobranteAux (a : b : c : xs) = a : b : c : cortarSobranteAux xs
+
+encontrarFinal :: [CadenaRNA] -> [CadenaRNA]
+encontrarFinal [] = []
+encontrarFinal (x : xs) | length(baseSinFinal) == length x = encontrarFinal xs
+                        | length(baseSinFinal) == 0 = encontrarFinal xs
+                        | otherwise = baseSinFinal : encontrarFinal xs
+                          where baseSinFinal = encontrarFinalAux x
+
+encontrarFinalAux :: CadenaRNA -> CadenaRNA
+encontrarFinalAux [] = []
+encontrarFinalAux (U : A : A : xs) = []
+encontrarFinalAux (U : A : G : xs) = []
+encontrarFinalAux (U : G : A : xs) = []
+encontrarFinalAux (a : b : c : xs) = a : b : c : encontrarFinalAux xs
+
+obtenerProteinas :: [CadenaRNA] -> [Proteina]
+obtenerProteinas [] = []
+obtenerProteinas (x : xs) = obtenerProteinasAux x : obtenerProteinas xs
+
+obtenerProteinasAux :: CadenaRNA -> Proteina
+obtenerProteinasAux [] = []
+obtenerProteinasAux (a : b : c : xs) = (traducirCodonAAminoacido(a, b, c)) : obtenerProteinasAux xs
+
+
 quitarCadenasVacias :: [Proteina] -> [Proteina]
 quitarCadenasVacias [] = []
 quitarCadenasVacias ([] : xs) = quitarCadenasVacias xs
 quitarCadenasVacias (x : xs) = x : quitarCadenasVacias xs
+
+traducirCodonAAminoacido :: Codon -> Aminoacido
+traducirCodonAAminoacido (A, A, A) = Lys
+traducirCodonAAminoacido (A, A, U) = Asn
+traducirCodonAAminoacido (A, A, C) = Asn
+traducirCodonAAminoacido (A, A, G) = Lys
+traducirCodonAAminoacido (A, U, A) = Ile
+traducirCodonAAminoacido (A, U, U) = Ile
+traducirCodonAAminoacido (A, U, C) = Ile
+traducirCodonAAminoacido (A, U, G) = Met
+traducirCodonAAminoacido (A, C, A) = Thr
+traducirCodonAAminoacido (A, C, U) = Thr
+traducirCodonAAminoacido (A, C, C) = Thr
+traducirCodonAAminoacido (A, C, G) = Thr
+traducirCodonAAminoacido (A, G, A) = Arg
+traducirCodonAAminoacido (A, G, U) = Ser
+traducirCodonAAminoacido (A, G, C) = Ser
+traducirCodonAAminoacido (A, G, G) = Arg
+traducirCodonAAminoacido (U, A, U) = Tyr
+traducirCodonAAminoacido (U, A, C) = Tyr
+traducirCodonAAminoacido (U, U, A) = Leu
+traducirCodonAAminoacido (U, U, U) = Phe
+traducirCodonAAminoacido (U, U, C) = Phe
+traducirCodonAAminoacido (U, U, G) = Leu
+traducirCodonAAminoacido (U, C, A) = Ser
+traducirCodonAAminoacido (U, C, U) = Ser
+traducirCodonAAminoacido (U, C, C) = Ser
+traducirCodonAAminoacido (U, C, G) = Ser
+traducirCodonAAminoacido (U, G, U) = Cys
+traducirCodonAAminoacido (U, G, C) = Cys
+traducirCodonAAminoacido (U, G, G) = Trp
+traducirCodonAAminoacido (C, A, A) = Gln
+traducirCodonAAminoacido (C, A, U) = His
+traducirCodonAAminoacido (C, A, C) = His
+traducirCodonAAminoacido (C, A, G) = Gln
+traducirCodonAAminoacido (C, U, A) = Leu
+traducirCodonAAminoacido (C, U, U) = Leu
+traducirCodonAAminoacido (C, U, C) = Leu
+traducirCodonAAminoacido (C, U, G) = Leu
+traducirCodonAAminoacido (C, C, A) = Pro
+traducirCodonAAminoacido (C, C, U) = Pro
+traducirCodonAAminoacido (C, C, C) = Pro
+traducirCodonAAminoacido (C, C, G) = Pro
+traducirCodonAAminoacido (C, G, A) = Arg
+traducirCodonAAminoacido (C, G, U) = Arg
+traducirCodonAAminoacido (C, G, C) = Arg
+traducirCodonAAminoacido (C, G, G) = Arg
+traducirCodonAAminoacido (G, A, A) = Glu
+traducirCodonAAminoacido (G, A, U) = Asp
+traducirCodonAAminoacido (G, A, C) = Asp
+traducirCodonAAminoacido (G, A, G) = Glu
+traducirCodonAAminoacido (G, U, A) = Val
+traducirCodonAAminoacido (G, U, U) = Val
+traducirCodonAAminoacido (G, U, C) = Val
+traducirCodonAAminoacido (G, U, G) = Val
+traducirCodonAAminoacido (G, C, A) = Ala
+traducirCodonAAminoacido (G, C, U) = Ala
+traducirCodonAAminoacido (G, C, C) = Ala
+traducirCodonAAminoacido (G, C, G) = Ala
+traducirCodonAAminoacido (G, G, A) = Gly
+traducirCodonAAminoacido (G, G, U) = Gly
+traducirCodonAAminoacido (G, G, C) = Gly
+traducirCodonAAminoacido (G, G, G) = Gly
