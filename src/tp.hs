@@ -1,13 +1,13 @@
 module TP where
 
-import TestingBase
+import Base
 
 complementarBase :: BaseNucleotidica -> BaseNucleotidica
 complementarBase A = T
 complementarBase T = A
 complementarBase C = G
 complementarBase G = C
-complementarBase b = b -- esta al pedo?
+complementarBase b = b
 
 complementarCadenaDNA :: CadenaDNA -> CadenaDNA
 complementarCadenaDNA [] = []
@@ -23,16 +23,16 @@ transcribir (A : xs) = U : transcribir xs
 transcribir (x : xs) = complementarBase x : transcribir xs
 
 iniciar :: CadenaDNA -> [Proteina]
-iniciar x = quitarVectoresVacios(
+iniciar x = quitarCadenasVacias(
                 iniciarAux [transcribir x,
                             transcribir(reverse x),
                             transcribir(complementarCadenaDNA x),
                             transcribir(complementarCadenaDNA(reverse x))])
 
-quitarVectoresVacios :: [Proteina] -> [Proteina]
-quitarVectoresVacios [] = []
-quitarVectoresVacios ([] : xs) = quitarVectoresVacios xs
-quitarVectoresVacios (x : xs) = x : quitarVectoresVacios xs
+quitarCadenasVacias :: [Proteina] -> [Proteina]
+quitarCadenasVacias [] = []
+quitarCadenasVacias ([] : xs) = quitarCadenasVacias xs
+quitarCadenasVacias (x : xs) = x : quitarCadenasVacias xs
 
 iniciarAux :: [CadenaRNA] -> [Proteina]
 iniciarAux [] = []
@@ -45,6 +45,7 @@ encontrarInicios :: CadenaRNA -> [CadenaRNA]
 encontrarInicios [] = []
 encontrarInicios (_ : []) = []
 encontrarInicios (_ : _ : []) = []
+encontrarInicios (_ : _ : _ : []) = []
 encontrarInicios (A : U : G : xs) = [xs] ++ encontrarInicios xs
 encontrarInicios (_ : xs) = encontrarInicios xs
 
@@ -61,6 +62,7 @@ cortarSobranteAux (a : b : c : xs) = a : b : c : cortarSobranteAux xs
 encontrarFinal :: [CadenaRNA] -> [CadenaRNA]
 encontrarFinal [] = []
 encontrarFinal (x : xs) | length(baseSinFinal) == length x = encontrarFinal xs
+                        | length(baseSinFinal) == 0 = encontrarFinal xs
                         | otherwise = baseSinFinal : encontrarFinal xs
                           where baseSinFinal = encontrarFinalAux x
 

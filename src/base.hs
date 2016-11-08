@@ -1,7 +1,7 @@
 module Base where
 
 -- Tipo enumerado de bases nucleotidicas
-data BaseNucleotidica = A | C | G | T | U deriving Show
+data BaseNucleotidica = A | C | G | T | U deriving (Show, Eq)
 
 -- Se asume que en una CadenaDNA no hay ninguna BaseNucleotidica de Uracilo (U)
 type CadenaDNA = [BaseNucleotidica]
@@ -15,13 +15,13 @@ type Codon = (BaseNucleotidica, BaseNucleotidica, BaseNucleotidica)
 
 -- Tipo enumerado para aminoacidos
 data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln |
-    Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving Show
+    Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving (Show, Eq)
 
 -- Una proteina es una lista de aminoacidos
 type Proteina = [Aminoacido]
 
 -- Funcion que dado un codon devuelve el correspondiente aminoacido
-traducirCodonAAminoacido:: Codon -> Aminoacido
+traducirCodonAAminoacido :: Codon -> Aminoacido
 traducirCodonAAminoacido (A, A, A) = Lys
 traducirCodonAAminoacido (A, A, U) = Asn
 traducirCodonAAminoacido (A, A, C) = Asn

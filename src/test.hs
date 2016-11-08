@@ -1,4 +1,5 @@
 import Test.HUnit
+import Base
 import TP
 
 testComplementarBase1 :: Test
@@ -32,45 +33,40 @@ testTranscribir2 = TestCase (assertEqual "for transcribir"
         [U, G, C, A, A, C, U, G] 
         (transcribir [A, C, G, T, T, G, A, C]))
 
-testRemoverListasVacias1 :: Test
-testRemoverListasVacias1 = TestCase (assertEqual "for removerListasVacias" 
+testQuitarCadenasVacias1 :: Test
+testQuitarCadenasVacias1 = TestCase (assertEqual "for quitarCadenasVacias" 
         [[Lys], [Lys, Lys]] 
-        (removerListasVacias [[], [Lys], [], [Lys, Lys], []]))
+        (quitarCadenasVacias [[], [Lys], [], [Lys, Lys], []]))
 
-testCortarInicio1 :: Test
-testCortarInicio1 = TestCase (assertEqual "for cortarInicio"
-        [A, G, C, A, U, U, A, A, G, U, G, A, G, G]
-        (cortarInicio [U, A, U, G, A, G, C, A, U, U, A, A, G, U, G, A, G, G] False False False))
+testQuitarCadenasVacias2 :: Test
+testQuitarCadenasVacias2 = TestCase (assertEqual "for quitarCadenasVacias" 
+        [] 
+        (quitarCadenasVacias []))
 
-testCortarInicio2 :: Test
-testCortarInicio2 = TestCase (assertEqual "for cortarInicio"
+testEncontrarInicios1 :: Test
+testEncontrarInicios1 = TestCase (assertEqual "for encontrarInicios1"
+        [[A, G, C, A, U, U, A, U, G, A, A, G, U, G, A, G, G, A, U, G], [A, A, G, U, G, A, G, G, A, U, G]]
+        (encontrarInicios [U, A, U, G, A, G, C, A, U, U, A, U, G, A, A, G, U, G, A, G, G, A, U, G]))
+
+testCortarSobrante1 :: Test
+testCortarSobrante1 = TestCase (assertEqual "for cortarSobrante"
+        [[A, G, C, A, U, A, G, C, A, U, A, G], [G, C, U, U, A, G, C, A, U], [A, G, C, U, G, C]]
+        (cortarSobrante [[A, G, C, A, U, A, G, C, A, U, A, G, C], [G, C, U, U, A, G, C, A, U, U, C], [A, G, C, U, G, C]]))
+
+testEncontrarFinal1 :: Test
+testEncontrarFinal1 = TestCase (assertEqual "for encontrarFinal"
+        [[A, G, C, A, U, A], [G, C, U], [A, G, C]]
+        (encontrarFinal [[A, G, C, A, U, A, U, G, A, U, A, G], [G, C, U, U, A, G, C, A, U], [A, G, C, U, A, A]]))
+
+testEncontrarFinal2 :: Test
+testEncontrarFinal2 = TestCase (assertEqual "for encontrarFinal"
         []
-        (cortarInicio [U, A, U, A, G, C, A, U, U, A, A, G, U, G, A, G, G] False False False))
+        (encontrarFinal [[A, G, C, A, U, A, U, A, C]]))
 
-testObtenerSubproteinas1 :: Test
-testObtenerSubproteinas1 = TestCase (assertEqual "for obtenerSubproteinas"
-        [Ser,Ile,Lys]
-        (obtenerSubproteinas [A, G, C, A, U, U, A, A, G, U, G, A, G, G]))
-
-testObtenerSubproteinas2 :: Test
-testObtenerSubproteinas2 = TestCase (assertEqual "for obtenerSubproteinas"
+testEncontrarFinal3 :: Test
+testEncontrarFinal3 = TestCase (assertEqual "for encontrarFinal"
         []
-        (obtenerSubproteinas [A, G, C, A, U, U, A, A, G, U, G, G, G, G]))
-
-testObtenerProteinas1 :: Test
-testObtenerProteinas1 = TestCase (assertEqual "for obtenerProteinas"
-        [[Ser,Ile,Lys]]
-        (obtenerProteinas [A, T, A, C, T, C, G, T, A, A, T, T, C, A, C, T, C, C]))
-
-testObtenerProteinas2 :: Test
-testObtenerProteinas2 = TestCase (assertEqual "for obtenerProteinas"
-        [[Leu,Tyr],[Ser,Tyr]]
-        (obtenerProteinas [T, T, A, A, T, A, C, G, A, C, A, T, A, A, T, T, A, T]))
-
-testObtenerProteinas3 :: Test
-testObtenerProteinas3 = TestCase (assertEqual "for obtenerProteinas"
-        []
-        (obtenerProteinas [G, C, C, T, T, G, A, T, A, T, G, G, A, G, A, A, C, T, C, A, T, T]))
+        (encontrarFinal [[U, A, G, A, C, G]]))
 
 tests :: Test
 tests = TestList [TestLabel "testComplementarBase1" testComplementarBase1,
@@ -80,11 +76,10 @@ tests = TestList [TestLabel "testComplementarBase1" testComplementarBase1,
                   TestLabel "testObtenerCadenaReverseDNA1" testObtenerCadenaReverseDNA1,
                   TestLabel "testTranscribir1" testTranscribir1,
                   TestLabel "testTranscribir2" testTranscribir2,
-                  TestLabel "testRemoverListasVacias1" testRemoverListasVacias1,
-                  TestLabel "testCortarInicio1" testCortarInicio1,
-                  TestLabel "testCortarInicio2" testCortarInicio2,
-                  TestLabel "testObtenerSubproteinas1" testObtenerSubproteinas1,
-                  TestLabel "testObtenerSubproteinas2" testObtenerSubproteinas2,
-                  TestLabel "testObtenerProteinas1" testObtenerProteinas1,
-                  TestLabel "testObtenerProteinas2" testObtenerProteinas2,
-                  TestLabel "testObtenerProteinas3" testObtenerProteinas3]
+                  TestLabel "testQuitarCadenasVacias1" testQuitarCadenasVacias1,
+                  TestLabel "testQuitarCadenasVacias2" testQuitarCadenasVacias2,
+                  TestLabel "testEncontrarInicios1" testEncontrarInicios1,
+                  TestLabel "testCortarSobrante1" testCortarSobrante1,
+                  TestLabel "testEncontrarFinal1" testEncontrarFinal1,
+                  TestLabel "testEncontrarFinal2" testEncontrarFinal2,
+                  TestLabel "testEncontrarFinal3" testEncontrarFinal3]
